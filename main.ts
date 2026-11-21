@@ -33,37 +33,20 @@ function buildWordmarkGroup(transform: string): string {
   ].join("");
 }
 
-function buildUsdcCoin(cx: number, cy: number, r: number): string {
-  const fontSize = Math.max(24, Math.round(r * 1.15));
-  const dy = Math.round(r * 0.4);
-  return [
-    `<g>`,
-    `<circle cx="${cx}" cy="${cy}" r="${r + 2}" fill="#191419"/>`,
-    `<circle cx="${cx}" cy="${cy}" r="${r - 2}" fill="#10B981" stroke="#FACC15" stroke-width="3.6"/>`,
-    `<text x="${cx}" y="${cy + dy}" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="${fontSize}" fill="#FFFFFF" stroke="#064E3B" stroke-width="2.5" paint-order="stroke fill">$</text>`,
-    `</g>`,
-  ].join("");
-}
-
-function buildSparkle(cx: number, cy: number, size: number, color: string): string {
-  const s = size;
-  return `<path d="M${cx} ${cy - s} Q${cx + s * 0.16} ${cy - s * 0.16} ${cx + s} ${cy} Q${cx + s * 0.16} ${cy + s * 0.16} ${cx} ${cy + s} Q${cx - s * 0.16} ${cy + s * 0.16} ${cx - s} ${cy} Q${cx - s * 0.16} ${cy - s * 0.16} ${cx} ${cy - s} Z" fill="${color}"/>`;
-}
-
-function buildPalmTree(baseX: number, baseY: number, leanX: number, scale: number): string {
+function buildStripPalm(baseX: number, baseY: number, leanX: number, scale: number): string {
   const topX = baseX + leanX;
-  const topY = baseY - 270 * scale;
+  const topY = baseY - 175 * scale;
   const ctrlX = baseX + leanX * 0.35;
-  const ctrlY = baseY - 140 * scale;
+  const ctrlY = baseY - 92 * scale;
   const fronds = [
-    [-115, -38, -62, -62],
-    [-130, 12, -74, -22],
-    [-95, 62, -48, 12],
-    [118, -32, 64, -58],
-    [132, 18, 76, -18],
-    [92, 68, 46, 16],
-    [-16, -98, -28, -58],
-    [32, -92, 22, -52],
+    [-92, -28, -50, -48],
+    [-105, 10, -60, -16],
+    [-76, 48, -38, 10],
+    [94, -24, 52, -46],
+    [106, 14, 62, -14],
+    [74, 52, 36, 12],
+    [-12, -78, -22, -46],
+    [26, -74, 18, -42],
   ]
     .map(([dx, dy, cx1, cy1]) => {
       const ex = topX + dx * scale;
@@ -71,306 +54,241 @@ function buildPalmTree(baseX: number, baseY: number, leanX: number, scale: numbe
       const qx = topX + cx1 * scale;
       const qy = topY + cy1 * scale;
       const qx2 = topX + cx1 * 0.72 * scale;
-      const qy2 = topY + (cy1 + 26) * scale;
-      return `<path d="M${topX} ${topY} Q${qx} ${qy} ${ex} ${ey} Q${qx2} ${qy2} ${topX} ${topY + 10 * scale} Z" fill="#100520"/>`;
+      const qy2 = topY + (cy1 + 20) * scale;
+      return `<path d="M${topX} ${topY} Q${qx} ${qy} ${ex} ${ey} Q${qx2} ${qy2} ${topX} ${topY + 8 * scale} Z" fill="#1E0833"/>`;
     })
     .join("");
 
   return [
     `<g>`,
-    `<path d="M${baseX - 13 * scale} ${baseY} Q${ctrlX - 8 * scale} ${ctrlY} ${topX - 4 * scale} ${topY} L${topX + 5 * scale} ${topY} Q${ctrlX + 10 * scale} ${ctrlY} ${baseX + 14 * scale} ${baseY} Z" fill="#100520"/>`,
+    `<path d="M${baseX - 9 * scale} ${baseY} Q${ctrlX - 6 * scale} ${ctrlY} ${topX - 3 * scale} ${topY} L${topX + 4 * scale} ${topY} Q${ctrlX + 7 * scale} ${ctrlY} ${baseX + 10 * scale} ${baseY} Z" fill="#1E0833"/>`,
     fronds,
     `</g>`,
   ].join("");
 }
 
 export function buildMemeSvg(): string {
-  const stars = [
-    [92, 58, 2.6],
-    [168, 96, 2.2],
-    [255, 42, 3.0],
-    [340, 74, 2.0],
-    [712, 48, 2.8],
-    [820, 86, 2.4],
-    [905, 52, 3.1],
-    [955, 118, 2.2],
-    [118, 210, 2.3],
-    [888, 228, 2.5],
-  ]
-    .map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#FEF3C7" opacity="0.65"/>`)
-    .join("");
-
-  const skyLineBuildings = [
-    [76, 448, 58, 150],
-    [138, 392, 64, 206],
-    [206, 462, 52, 136],
-    [262, 495, 56, 103],
-    [682, 488, 56, 110],
-    [742, 414, 68, 184],
-    [814, 456, 58, 142],
-    [876, 386, 74, 212],
+  const skyline = [
+    [104, 422, 46, 118],
+    [154, 386, 54, 154],
+    [212, 434, 44, 106],
+    [422, 412, 50, 128],
+    [476, 378, 56, 162],
+    [536, 432, 46, 108],
+    [796, 404, 52, 136],
+    [852, 376, 58, 164],
   ]
     .map(([x, y, w, h], idx) => {
-      const accent = idx % 2 === 0 ? "#22D3EE" : "#FF4DA6";
+      const accent = idx % 2 === 0 ? "#67E8F9" : "#FF85C0";
       return [
-        `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#220B3B"/>`,
-        `<rect x="${x + 8}" y="${y + 14}" width="${w - 16}" height="5" fill="${accent}" opacity="0.55"/>`,
-        `<rect x="${x + 12}" y="${y + 30}" width="${w - 24}" height="4" fill="#FDE68A" opacity="0.35"/>`,
-        `<rect x="${x + 12}" y="${y + 44}" width="${w - 24}" height="4" fill="${accent}" opacity="0.35"/>`,
+        `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#2E0B42" opacity="0.82"/>`,
+        `<rect x="${x + 7}" y="${y + 12}" width="${w - 14}" height="4" fill="${accent}" opacity="0.65"/>`,
+        `<rect x="${x + 10}" y="${y + 24}" width="${w - 20}" height="3" fill="#FFE066" opacity="0.45"/>`,
       ].join("");
     })
     .join("");
 
   return [
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="MISSION PASSED Vice City GTA 6 Meme on make.fun">`,
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="Leonida Family Court Divorce Decree - He chose GTA VI - make.fun">`,
     `<defs>`,
-    `<linearGradient id="viceSky" x1="0" y1="0" x2="0" y2="1">`,
-    `<stop offset="0%" stop-color="#130624"/>`,
-    `<stop offset="25%" stop-color="#4A1168"/>`,
-    `<stop offset="45%" stop-color="#C41C83"/>`,
-    `<stop offset="56%" stop-color="#FF6B4A"/>`,
-    `<stop offset="63%" stop-color="#FFC65C"/>`,
-    `<stop offset="100%" stop-color="#120724"/>`,
+    `<clipPath id="stripClip">`,
+    `<rect x="56" y="262" width="912" height="326" rx="18"/>`,
+    `</clipPath>`,
+    `<linearGradient id="stripSky" x1="0" y1="0" x2="0" y2="1">`,
+    `<stop offset="0%" stop-color="#3B0E54"/>`,
+    `<stop offset="38%" stop-color="#B8257A"/>`,
+    `<stop offset="74%" stop-color="#FF6B4A"/>`,
+    `<stop offset="100%" stop-color="#FFD166"/>`,
     `</linearGradient>`,
-    `<radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">`,
-    `<stop offset="0%" stop-color="#FFE066" stop-opacity="0.55"/>`,
-    `<stop offset="65%" stop-color="#FF5E7E" stop-opacity="0.18"/>`,
-    `<stop offset="100%" stop-color="#FF5E7E" stop-opacity="0"/>`,
-    `</radialGradient>`,
-    `<linearGradient id="sunDisc" x1="0" y1="0" x2="0" y2="1">`,
-    `<stop offset="0%" stop-color="#FFF5A8"/>`,
-    `<stop offset="48%" stop-color="#FF9F43"/>`,
-    `<stop offset="100%" stop-color="#EC1C82"/>`,
-    `</linearGradient>`,
-    `<mask id="sunSlices">`,
-    `<rect x="0" y="0" width="1024" height="1024" fill="#FFFFFF"/>`,
-    `<rect x="290" y="476" width="444" height="8" fill="#000000"/>`,
-    `<rect x="290" y="502" width="444" height="11" fill="#000000"/>`,
-    `<rect x="290" y="530" width="444" height="14" fill="#000000"/>`,
-    `<rect x="290" y="560" width="444" height="18" fill="#000000"/>`,
-    `</mask>`,
-    `<linearGradient id="roadGrad" x1="0" y1="0" x2="0" y2="1">`,
-    `<stop offset="0%" stop-color="#1C0C33"/>`,
-    `<stop offset="100%" stop-color="#0B0417"/>`,
-    `</linearGradient>`,
-    `<linearGradient id="goldHud" x1="0" y1="0" x2="0" y2="1">`,
-    `<stop offset="0%" stop-color="#FFF7B2"/>`,
-    `<stop offset="48%" stop-color="#FACC15"/>`,
-    `<stop offset="100%" stop-color="#EA580C"/>`,
-    `</linearGradient>`,
-    `<linearGradient id="hudBorder" x1="0" y1="0" x2="1" y2="0">`,
-    `<stop offset="0%" stop-color="#EC4899"/>`,
-    `<stop offset="50%" stop-color="#38BDF8"/>`,
+    `<linearGradient id="stripSun" x1="0" y1="0" x2="0" y2="1">`,
+    `<stop offset="0%" stop-color="#FFF3A8"/>`,
+    `<stop offset="55%" stop-color="#FFAA4C"/>`,
     `<stop offset="100%" stop-color="#EC4899"/>`,
     `</linearGradient>`,
-    `<linearGradient id="carBody" x1="0" y1="0" x2="0" y2="1">`,
-    `<stop offset="0%" stop-color="#FF66BE"/>`,
-    `<stop offset="48%" stop-color="#E11D8B"/>`,
-    `<stop offset="100%" stop-color="#83185E"/>`,
-    `</linearGradient>`,
-    `<linearGradient id="carHood" x1="0" y1="0" x2="0" y2="1">`,
-    `<stop offset="0%" stop-color="#FF8AD0"/>`,
-    `<stop offset="55%" stop-color="#EC2892"/>`,
-    `<stop offset="100%" stop-color="#B0156F"/>`,
-    `</linearGradient>`,
-    `<linearGradient id="usdcCoinGrad" x1="0" y1="0" x2="1" y2="1">`,
-    `<stop offset="0%" stop-color="#34D399"/>`,
-    `<stop offset="100%" stop-color="#059669"/>`,
-    `</linearGradient>`,
-    `<linearGradient id="aviatorLens" x1="0" y1="0" x2="1" y2="1">`,
+    `<mask id="stripSunSlices">`,
+    `<rect x="0" y="0" width="1024" height="1024" fill="#FFFFFF"/>`,
+    `<rect x="300" y="458" width="420" height="6" fill="#000000"/>`,
+    `<rect x="300" y="478" width="420" height="9" fill="#000000"/>`,
+    `<rect x="300" y="500" width="420" height="12" fill="#000000"/>`,
+    `</mask>`,
+    `<linearGradient id="gatorShades" x1="0" y1="0" x2="1" y2="1">`,
     `<stop offset="0%" stop-color="#67E8F9"/>`,
     `<stop offset="55%" stop-color="#06B6D4"/>`,
     `<stop offset="100%" stop-color="#0F172A"/>`,
     `</linearGradient>`,
-    `<linearGradient id="headlightCone" x1="0" y1="0" x2="0" y2="1">`,
-    `<stop offset="0%" stop-color="#A5F3FC" stop-opacity="0.6"/>`,
-    `<stop offset="45%" stop-color="#38BDF8" stop-opacity="0.22"/>`,
-    `<stop offset="100%" stop-color="#38BDF8" stop-opacity="0"/>`,
-    `</linearGradient>`,
-    `<radialGradient id="coinHalo" cx="50%" cy="50%" r="50%">`,
-    `<stop offset="0%" stop-color="#FF33A8" stop-opacity="0.55"/>`,
-    `<stop offset="55%" stop-color="#FACC15" stop-opacity="0.24"/>`,
-    `<stop offset="100%" stop-color="#FACC15" stop-opacity="0"/>`,
-    `</radialGradient>`,
     `</defs>`,
 
-    // Layer 1: Background sky & retro synthwave sun
-    `<rect width="1024" height="1024" fill="url(#viceSky)"/>`,
-    stars,
-    `<circle cx="512" cy="492" r="245" fill="url(#sunGlow)"/>`,
-    `<circle cx="512" cy="492" r="188" fill="url(#sunDisc)" mask="url(#sunSlices)"/>`,
+    // 1. Outer Warm Cream Court Document Card (100% Opaque)
+    `<rect width="1024" height="1024" fill="#FDFBF4"/>`,
+    `<rect x="24" y="24" width="976" height="976" rx="16" fill="none" stroke="#191419" stroke-width="3"/>`,
+    `<rect x="34" y="34" width="956" height="956" rx="12" fill="none" stroke="#6B1D45" stroke-opacity="0.25" stroke-width="1.5"/>`,
 
-    // Layer 2: Art Deco Skyline & Highway Sign
-    skyLineBuildings,
-    // Distant horizon neon strip
-    `<rect x="0" y="592" width="1024" height="6" fill="#FF66C4" opacity="0.65"/>`,
+    // 2. Top Court Header (y: 44..104)
+    `<text x="60" y="80" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="23" letter-spacing="2.2" fill="#6B1D45">LEONIDA FAMILY COURT</text>`,
+    `<text x="964" y="80" text-anchor="end" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="23" letter-spacing="2.2" fill="#6B1D45">DIVORCE DECREE</text>`,
+    `<line x1="56" y1="98" x2="968" y2="98" stroke="#191419" stroke-width="2"/>`,
+    `<line x1="56" y1="104" x2="968" y2="104" stroke="#6B1D45" stroke-opacity="0.65" stroke-width="1"/>`,
 
-    // Florida / Vice City Highway Sign (right mid-ground, >= 24px crisp text, clear of palms)
+    // 3. Headline Gag (1-Second Laugh)
+    `<text x="512" y="190" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="88" letter-spacing="-1.5" fill="#191419">He chose GTA VI.</text>`,
+    `<text x="512" y="236" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="26" letter-spacing="2.4" fill="#881337">MARRIED 2013–2026&#160;&#160;•&#160;&#160;13 YEARS</text>`,
+
+    // 4. Center Illustrated Strip (y: 262..588, clipped)
+    `<g clip-path="url(#stripClip)">`,
+    `<rect x="56" y="262" width="912" height="326" fill="url(#stripSky)"/>`,
+    `<circle cx="508" cy="462" r="142" fill="url(#stripSun)" mask="url(#stripSunSlices)"/>`,
+    skyline,
+    buildStripPalm(88, 540, 28, 1.05),
+    buildStripPalm(936, 540, -26, 0.98),
+    // Warm courtroom/living-room floor strip
+    `<rect x="56" y="534" width="912" height="54" fill="#F3E7D3"/>`,
+    `<line x1="56" y1="534" x2="968" y2="534" stroke="#191419" stroke-width="2.5"/>`,
+
+    // Left Half: Official make.fun Ghost Mascot as the Judge (large, unobstructed sparkle eyes & magenta star coin)
+    buildMarkGhostGroup("translate(136, 294) scale(8.8)"),
+
+    // Powdered White Judge's Wig perched strictly ABOVE ghost's sparkle eyes & clear of star coin
     `<g>`,
-    `<rect x="838" y="346" width="10" height="248" fill="#1D1230" stroke="#140B24" stroke-width="2"/>`,
-    `<rect x="912" y="346" width="10" height="248" fill="#1D1230" stroke="#140B24" stroke-width="2"/>`,
-    `<rect x="768" y="256" width="214" height="92" rx="12" fill="#0D5C5E" stroke="#140B24" stroke-width="4"/>`,
-    `<rect x="775" y="263" width="200" height="78" rx="8" fill="none" stroke="#CCFBF1" stroke-width="2.5"/>`,
-    `<text x="875" y="296" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="25" fill="#FFFFFF">VICE CITY</text>`,
-    `<text x="875" y="328" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="24" fill="#99F6E4">LEONIDA</text>`,
+    `<path d="M188 340 Q180 302 220 296 Q240 282 262 288 Q284 282 304 296 Q340 302 332 340 Q338 362 324 374 Q314 352 308 326 Q262 316 216 326 Q210 358 194 388 Q174 376 178 352 Z" fill="#F8FAFC" stroke="#191419" stroke-width="4" stroke-linejoin="round"/>`,
+    `<path d="M222 306 Q262 296 302 306" fill="none" stroke="#CBD5E1" stroke-width="3" stroke-linecap="round"/>`,
+    `<path d="M184 352 Q196 348 206 356 M182 368 Q194 364 202 372" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"/>`,
+    `<path d="M318 350 Q328 346 334 354" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"/>`,
     `</g>`,
 
-    // Layer 3: Ocean Beach Boulevard Asphalt & Perspective Road Grid (full bottom bleed)
-    `<rect x="0" y="596" width="1024" height="428" fill="url(#roadGrad)"/>`,
-    `<polygon points="270,596 754,596 1024,848 1024,1024 0,1024 0,848" fill="#140829"/>`,
-    `<line x1="270" y1="596" x2="-10" y2="848" stroke="#22D3EE" stroke-width="5"/>`,
-    `<line x1="754" y1="596" x2="1034" y2="848" stroke="#EC4899" stroke-width="5"/>`,
-    `<line x1="512" y1="596" x2="512" y2="624" stroke="#FDE047" stroke-width="5" stroke-linecap="round"/>`,
-    `<line x1="512" y1="646" x2="512" y2="682" stroke="#FDE047" stroke-width="6" stroke-linecap="round"/>`,
-    // Palm trees framing left & right edges (clear of highway sign)
-    buildPalmTree(54, 622, 46, 1.05),
-    buildPalmTree(18, 665, 22, 0.85),
-    buildPalmTree(988, 632, -26, 0.72),
-    buildPalmTree(950, 672, -16, 0.58),
-
-    // Ground shadow + multi-layered warm-cyan headlight glow beams on asphalt
-    `<ellipse cx="512" cy="792" rx="348" ry="30" fill="#05010D" opacity="0.82"/>`,
-    `<polygon points="206,672 288,672 346,816 106,816" fill="url(#headlightCone)"/>`,
-    `<polygon points="736,672 818,672 918,816 678,816" fill="url(#headlightCone)"/>`,
-    `<ellipse cx="242" cy="776" rx="74" ry="18" fill="#67E8F9" opacity="0.22"/>`,
-    `<ellipse cx="782" cy="776" rx="74" ry="18" fill="#67E8F9" opacity="0.22"/>`,
-
-    // Layer 4: Hero Foreground Scene (Seats -> Ghost & Gator -> Convertible Front)
-    // Convertible rear deck & plush seats
-    `<path d="M214 526 Q218 476 266 476 L758 476 Q806 476 810 526 L824 574 L200 574 Z" fill="#4A1148" stroke="#191419" stroke-width="5"/>`,
-    `<rect x="266" y="454" width="136" height="90" rx="22" fill="#3B0D38" stroke="#191419" stroke-width="5"/>`,
-    `<rect x="278" y="464" width="112" height="68" rx="14" fill="#5E165A"/>`,
-    `<rect x="614" y="454" width="136" height="90" rx="22" fill="#3B0D38" stroke="#191419" stroke-width="5"/>`,
-    `<rect x="626" y="464" width="112" height="68" rx="14" fill="#5E165A"/>`,
-
-    // Soft halo behind the ghost's raised magenta star coin + elevated Official make.fun Ghost Mascot
-    `<circle cx="510" cy="361" r="96" fill="url(#coinHalo)"/>`,
-    buildMarkGhostGroup("translate(218, 214) scale(11.0)"),
-
-    // Passenger Seat: Leonida Florida Gator with Neon Aviators & Gamepad
+    // Warm Mahogany Judge's Bench + Wooden Gavel
     `<g>`,
-    // Tropical shirt torso & collar
-    `<path d="M598 552 L614 472 Q682 454 748 474 L768 552 Z" fill="#0F766E" stroke="#191419" stroke-width="5" stroke-linejoin="round"/>`,
-    `<path d="M640 470 L682 528 L724 470 Z" fill="#F472B6" stroke="#191419" stroke-width="4" stroke-linejoin="round"/>`,
-    // Gator head & snout
-    `<path d="M636 332 Q650 302 686 306 Q724 308 738 338 Q766 376 756 426 Q742 478 682 478 Q610 478 588 430 Q574 398 598 378 Q618 364 636 332 Z" fill="#22C55E" stroke="#191419" stroke-width="5.5" stroke-linejoin="round"/>`,
-    // Pale green jaw & belly highlight
-    `<path d="M592 414 Q628 436 688 432 Q726 430 742 410 Q736 462 678 468 Q612 468 592 414 Z" fill="#BBF7D0" stroke="#191419" stroke-width="4"/>`,
-    // Toothy grin
-    `<path d="M596 404 Q648 426 708 408" fill="none" stroke="#191419" stroke-width="5" stroke-linecap="round"/>`,
-    `<polygon points="610,410 618,426 626,412" fill="#FFFFFF" stroke="#191419" stroke-width="2.2"/>`,
-    `<polygon points="634,415 642,432 650,416" fill="#FFFFFF" stroke="#191419" stroke-width="2.2"/>`,
-    `<polygon points="658,416 666,433 674,416" fill="#FFFFFF" stroke="#191419" stroke-width="2.2"/>`,
-    `<polygon points="682,414 690,430 698,412" fill="#FFFFFF" stroke="#191419" stroke-width="2.2"/>`,
-    // Nostril dots
-    `<circle cx="606" cy="388" r="3.5" fill="#14532D"/>`,
-    `<circle cx="622" cy="386" r="3.5" fill="#14532D"/>`,
-    // Neon-cyan Vice City aviator sunglasses
-    `<path d="M622 342 L744 342" stroke="#FACC15" stroke-width="5" stroke-linecap="round"/>`,
-    `<path d="M624 342 Q620 378 652 380 Q676 380 676 350 Q676 340 624 342 Z" fill="url(#aviatorLens)" stroke="#FACC15" stroke-width="4.5"/>`,
-    `<path d="M686 350 Q686 380 710 380 Q742 378 738 342 Q686 340 686 350 Z" fill="url(#aviatorLens)" stroke="#FACC15" stroke-width="4.5"/>`,
-    `<line x1="636" y1="348" x2="656" y2="370" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" opacity="0.75"/>`,
-    `<line x1="698" y1="348" x2="718" y2="370" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" opacity="0.75"/>`,
-    // Gator arm holding gamepad controller
-    `<path d="M736 488 Q766 472 778 446" fill="none" stroke="#22C55E" stroke-width="24" stroke-linecap="round"/>`,
-    `<path d="M736 488 Q766 472 778 446" fill="none" stroke="#191419" stroke-width="5" stroke-linecap="round" opacity="0.25"/>`,
-    // Gamepad controller
-    `<g transform="translate(734, 396) rotate(-14)">`,
-    `<path d="M12 18 Q12 6 30 6 L72 6 Q90 6 90 18 L96 48 Q98 62 84 62 Q74 62 66 48 L36 48 Q28 62 18 62 Q4 62 6 48 Z" fill="#1E1B2E" stroke="#191419" stroke-width="4.5" stroke-linejoin="round"/>`,
-    `<rect x="22" y="21" width="16" height="6" rx="2" fill="#22D3EE"/>`,
-    `<rect x="27" y="16" width="6" height="16" rx="2" fill="#22D3EE"/>`,
-    `<circle cx="70" cy="20" r="4" fill="#EC4899"/>`,
-    `<circle cx="78" cy="27" r="4" fill="#FACC15"/>`,
-    `<circle cx="62" cy="27" r="4" fill="#22D3EE"/>`,
-    `<circle cx="70" cy="34" r="4" fill="#34D399"/>`,
+    // Sound block + Gavel on left of bench with comic impact ticks
+    `<ellipse cx="144" cy="492" rx="22" ry="6" fill="#78350F" stroke="#191419" stroke-width="3"/>`,
+    `<line x1="118" y1="438" x2="106" y2="424" stroke="#FEF08A" stroke-width="3.5" stroke-linecap="round"/>`,
+    `<line x1="172" y1="430" x2="184" y2="416" stroke="#FEF08A" stroke-width="3.5" stroke-linecap="round"/>`,
+    `<g transform="translate(132, 434) rotate(-28)">`,
+    `<rect x="16" y="16" width="10" height="44" rx="4" fill="#B45309" stroke="#191419" stroke-width="3"/>`,
+    `<rect x="0" y="0" width="42" height="18" rx="6" fill="#92400E" stroke="#191419" stroke-width="3"/>`,
+    `<line x1="8" y1="2" x2="8" y2="16" stroke="#FDE68A" stroke-width="2" opacity="0.65"/>`,
+    `<line x1="34" y1="2" x2="34" y2="16" stroke="#FDE68A" stroke-width="2" opacity="0.65"/>`,
+    `</g>`,
+    // Bench body
+    `<rect x="86" y="492" width="376" height="18" rx="5" fill="#9A4E24" stroke="#191419" stroke-width="3.5"/>`,
+    `<rect x="100" y="510" width="348" height="78" fill="#6F3416" stroke="#191419" stroke-width="3.5"/>`,
+    `<rect x="118" y="524" width="312" height="50" rx="4" fill="#5C2910" stroke="#3B1808" stroke-width="2"/>`,
+    `</g>`,
+
+    // Official Tilted Rubber Stamp Badge: GRANTED
+    `<g transform="translate(466, 318) rotate(-11)">`,
+    `<rect x="-86" y="-27" width="172" height="54" rx="8" fill="#FDFBF4" fill-opacity="0.96" stroke="#BE123C" stroke-width="4"/>`,
+    `<rect x="-80" y="-21" width="160" height="42" rx="5" fill="none" stroke="#C41C83" stroke-width="1.5"/>`,
+    `<text x="0" y="10" text-anchor="middle" font-family="'Segoe UI', 'Arial Black', Arial, sans-serif" font-weight="900" font-size="30" letter-spacing="2.2" fill="#BE123C">GRANTED</text>`,
+    `</g>`,
+
+    // Right Half: Retro Vice City Living-Room Sofa + Happy Leonida Gator + GTA VI Case + Keys
+    `<g>`,
+    // Sofa legs
+    `<line x1="544" y1="542" x2="536" y2="568" stroke="#191419" stroke-width="6" stroke-linecap="round"/>`,
+    `<line x1="844" y1="542" x2="852" y2="568" stroke="#191419" stroke-width="6" stroke-linecap="round"/>`,
+    // Sofa back & cushions
+    `<rect x="526" y="392" width="340" height="114" rx="24" fill="#0F766E" stroke="#191419" stroke-width="4"/>`,
+    `<rect x="546" y="406" width="300" height="72" rx="14" fill="#14B8A6" stroke="#191419" stroke-width="2.5"/>`,
+
+    // Happy Leonida Gator lounging on the sofa
+    `<g>`,
+    // Gator torso & scaly belly
+    `<path d="M642 496 L654 416 Q708 398 762 418 L774 496 Z" fill="#16A34A" stroke="#191419" stroke-width="4" stroke-linejoin="round"/>`,
+    `<path d="M676 420 Q708 412 740 420 L746 496 L670 496 Z" fill="#BBF7D0" stroke="#191419" stroke-width="3"/>`,
+    // Gator head & wide toothy grin
+    `<path d="M666 322 Q680 296 714 298 Q750 300 764 328 Q788 362 778 404 Q762 442 708 442 Q644 442 626 402 Q614 374 636 356 Q652 344 666 322 Z" fill="#22C55E" stroke="#191419" stroke-width="4.5" stroke-linejoin="round"/>`,
+    `<path d="M630 390 Q662 410 714 406 Q748 404 762 386 Q756 432 706 436 Q648 436 630 390 Z" fill="#BBF7D0" stroke="#191419" stroke-width="3.5"/>`,
+    `<path d="M634 382 Q682 400 734 384" fill="none" stroke="#191419" stroke-width="4" stroke-linecap="round"/>`,
+    `<polygon points="646,388 653,402 660,389" fill="#FFFFFF" stroke="#191419" stroke-width="2"/>`,
+    `<polygon points="668,392 675,406 682,393" fill="#FFFFFF" stroke="#191419" stroke-width="2"/>`,
+    `<polygon points="690,393 697,407 704,393" fill="#FFFFFF" stroke="#191419" stroke-width="2"/>`,
+    `<polygon points="712,390 719,404 726,389" fill="#FFFFFF" stroke="#191419" stroke-width="2"/>`,
+    `<circle cx="642" cy="368" r="3" fill="#14532D"/>`,
+    `<circle cx="656" cy="366" r="3" fill="#14532D"/>`,
+    // Cyan Vice City aviator shades
+    `<path d="M656 328 L768 328" stroke="#FACC15" stroke-width="4.5" stroke-linecap="round"/>`,
+    `<path d="M658 328 Q655 360 684 362 Q706 362 706 336 Q706 326 658 328 Z" fill="url(#gatorShades)" stroke="#FACC15" stroke-width="4"/>`,
+    `<path d="M716 336 Q716 362 738 362 Q766 360 762 328 Q716 326 716 336 Z" fill="url(#gatorShades)" stroke="#FACC15" stroke-width="4"/>`,
+    `<line x1="668" y1="334" x2="686" y2="352" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.75"/>`,
+    `<line x1="726" y1="334" x2="744" y2="352" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.75"/>`,
+    // Gator arms hugging gaming controller
+    `<path d="M654 446 Q664 476 686 476" fill="none" stroke="#22C55E" stroke-width="18" stroke-linecap="round"/>`,
+    `<path d="M760 446 Q750 476 728 476" fill="none" stroke="#22C55E" stroke-width="18" stroke-linecap="round"/>`,
+    `<g transform="translate(668, 448)">`,
+    `<path d="M10 14 Q10 4 26 4 L60 4 Q76 4 76 14 L82 40 Q84 52 72 52 Q62 52 56 40 L30 40 Q24 52 14 52 Q2 52 4 40 Z" fill="#1E1B2E" stroke="#191419" stroke-width="3.5" stroke-linejoin="round"/>`,
+    `<rect x="18" y="17" width="14" height="5" rx="2" fill="#22D3EE"/>`,
+    `<rect x="22.5" y="12.5" width="5" height="14" rx="2" fill="#22D3EE"/>`,
+    `<circle cx="60" cy="16" r="3.5" fill="#FF33A8"/>`,
+    `<circle cx="67" cy="22" r="3.5" fill="#FACC15"/>`,
+    `<circle cx="53" cy="22" r="3.5" fill="#22D3EE"/>`,
+    `<circle cx="60" cy="28" r="3.5" fill="#34D399"/>`,
     `</g>`,
     `</g>`,
 
-    // Floating $ coins with shiny gold rims & sparkles (100% clear of faces, gamepad & sign)
-    buildUsdcCoin(246, 282, 24),
-    buildUsdcCoin(554, 274, 24),
-    buildUsdcCoin(172, 366, 26),
-    buildUsdcCoin(164, 462, 22),
-    buildSparkle(492, 258, 13, "#FEF08A"),
-    buildSparkle(538, 306, 10, "#FFFFFF"),
-    buildSparkle(210, 318, 12, "#6EE7B7"),
-    buildSparkle(602, 282, 11, "#F472B6"),
+    // GTA VI Game Case propped on left couch cushion (clean margin around GTA VI)
+    `<g transform="translate(546, 422) rotate(-8)">`,
+    `<rect x="0" y="0" width="58" height="70" rx="5" fill="#FF66B2" stroke="#191419" stroke-width="3"/>`,
+    `<rect x="4" y="4" width="50" height="16" rx="2" fill="#3B0E54"/>`,
+    `<rect x="4" y="22" width="50" height="44" rx="2" fill="#FFD166"/>`,
+    `<text x="29" y="49" text-anchor="middle" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-size="11.5" letter-spacing="0.2" fill="#191419">GTA VI</text>`,
+    `</g>`,
 
-    // Steering Wheel (strictly below ghost sparkle eyes)
-    `<circle cx="354" cy="530" r="42" fill="none" stroke="#191419" stroke-width="14"/>`,
-    `<circle cx="354" cy="530" r="42" fill="none" stroke="#312E81" stroke-width="7"/>`,
-    `<line x1="316" y1="530" x2="392" y2="530" stroke="#191419" stroke-width="8"/>`,
-    `<circle cx="354" cy="530" r="11" fill="#EC4899" stroke="#191419" stroke-width="4"/>`,
+    // Sofa armrests & front base (coral Vice City piping)
+    `<rect x="514" y="454" width="38" height="88" rx="14" fill="#0F766E" stroke="#191419" stroke-width="4"/>`,
+    `<rect x="840" y="454" width="38" height="88" rx="14" fill="#0F766E" stroke="#191419" stroke-width="4"/>`,
+    `<rect x="546" y="490" width="300" height="24" rx="8" fill="#FF6B8B" stroke="#191419" stroke-width="3.5"/>`,
+    `<rect x="542" y="512" width="308" height="32" rx="8" fill="#0D5C5E" stroke="#191419" stroke-width="4"/>`,
+    `</g>`,
 
-    // Low-slung Convertible Windshield (100% below ghost's elevated round hand & star coin)
-    `<path d="M214 556 L240 492 Q512 484 784 492 L810 556 Z" fill="#38BDF8" fill-opacity="0.22" stroke="#E2E8F0" stroke-width="9" stroke-linejoin="round"/>`,
-    `<path d="M214 556 L240 492 Q512 484 784 492 L810 556" fill="none" stroke="#191419" stroke-width="4" stroke-linejoin="round"/>`,
-    `<line x1="274" y1="500" x2="254" y2="546" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" opacity="0.55"/>`,
-    `<line x1="296" y1="500" x2="280" y2="538" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" opacity="0.4"/>`,
+    // Side Table on Far Right + House Keys with SPOUSE'S Tag
+    `<g>`,
+    `<rect x="888" y="486" width="66" height="12" rx="4" fill="#9A4E24" stroke="#191419" stroke-width="3"/>`,
+    `<line x1="900" y1="498" x2="896" y2="564" stroke="#191419" stroke-width="5" stroke-linecap="round"/>`,
+    `<line x1="942" y1="498" x2="946" y2="564" stroke="#191419" stroke-width="5" stroke-linecap="round"/>`,
+    // Gold key ring + 2 unmistakable notched house keys resting on the side table
+    `<circle cx="916" cy="472" r="9" fill="none" stroke="#FACC15" stroke-width="4"/>`,
+    `<circle cx="916" cy="472" r="9" fill="none" stroke="#191419" stroke-width="1.2"/>`,
+    `<g transform="translate(912, 478) rotate(16)">`,
+    `<path d="M-3 0 L3 0 L3 15 L9 15 L9 19 L4 19 L4 22 L8 22 L8 26 L4 26 L4 29 L9 29 L9 33 L-3 33 Z" fill="#FACC15" stroke="#191419" stroke-width="1.8" stroke-linejoin="round"/>`,
+    `</g>`,
+    `<g transform="translate(920, 478) rotate(-14)">`,
+    `<path d="M-3 0 L3 0 L3 34 L-9 34 L-9 30 L-4 30 L-4 27 L-8 27 L-8 23 L-4 23 L-4 19 L-9 19 L-9 15 L-3 15 Z" fill="#FDE047" stroke="#191419" stroke-width="1.8" stroke-linejoin="round"/>`,
+    `</g>`,
+    // Crisp cream luggage tag reading SPOUSE'S with generous grommet clearance
+    `<g transform="translate(846, 418)">`,
+    `<line x1="70" y1="36" x2="70" y2="46" stroke="#191419" stroke-width="2.5"/>`,
+    `<rect x="0" y="0" width="114" height="36" rx="7" fill="#FDFBF4" stroke="#191419" stroke-width="3"/>`,
+    `<circle cx="12" cy="18" r="3.5" fill="#C41C83"/>`,
+    `<text x="66" y="24" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="15.5" letter-spacing="0.4" fill="#191419">SPOUSE'S</text>`,
+    `</g>`,
+    `</g>`,
+    `</g>`,
+    // Crisp outer border of center strip
+    `<rect x="56" y="262" width="912" height="326" rx="18" fill="none" stroke="#191419" stroke-width="3"/>`,
 
-    // Side Mirrors
-    `<rect x="148" y="532" width="54" height="28" rx="12" fill="#E11D8B" stroke="#191419" stroke-width="4.5"/>`,
-    `<rect x="822" y="532" width="54" height="28" rx="12" fill="#E11D8B" stroke="#191419" stroke-width="4.5"/>`,
+    // 5. Deadpan Court Findings (ONLY 3 crisp single-line punches)
+    `<text x="64" y="646" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="27" fill="#191419"><tspan fill="#881337" font-weight="900">1.</tspan>&#160;&#160;He deleted 214 GB of wedding photos for Vice City.</text>`,
+    `<text x="64" y="694" font-family="'Segoe UI', Arial, sans-serif" font-weight="700" font-size="26" fill="#27202B"><tspan fill="#881337" font-weight="900">2.</tspan>&#160;&#160;Called in sick 5 days with “Vice City flu.”</text>`,
+    `<text x="64" y="742" font-family="'Segoe UI', Arial, sans-serif" font-weight="700" font-size="24" fill="#27202B"><tspan fill="#881337" font-weight="900">3.</tspan>&#160;&#160;Spouse gets the house. He keeps the couch, gator, and Jason &amp; Lucia.</text>`,
 
-    // Front Tires
-    `<rect x="192" y="740" width="84" height="64" rx="16" fill="#181224" stroke="#090410" stroke-width="4"/>`,
-    `<rect x="748" y="740" width="84" height="64" rx="16" fill="#181224" stroke="#090410" stroke-width="4"/>`,
+    // 6. Delay Strikeout Line
+    `<line x1="56" y1="764" x2="968" y2="764" stroke="#6B1D45" stroke-opacity="0.3" stroke-width="1.5"/>`,
+    `<text x="192" y="802" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="23" letter-spacing="1.1" fill="#6B1D45">HEARING MOVED:</text>`,
+    `<text x="410" y="802" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="24" fill="#78716C">FALL 2025</text>`,
+    `<line x1="342" y1="794" x2="478" y2="794" stroke="#DC2626" stroke-width="3.5" stroke-linecap="round"/>`,
+    `<text x="588" y="802" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="24" fill="#78716C">MAY 2026</text>`,
+    `<line x1="522" y1="794" x2="654" y2="794" stroke="#DC2626" stroke-width="3.5" stroke-linecap="round"/>`,
+    `<rect x="688" y="775" width="218" height="38" rx="8" fill="#FEF08A" stroke="#191419" stroke-width="2"/>`,
+    `<text x="797" y="802" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="24" letter-spacing="0.8" fill="#191419">19 NOV 2026</text>`,
 
-    // Hot-Pink Vice City Convertible Hood & Front Bumper
-    `<path d="M188 558 Q512 536 836 558 L860 658 Q868 748 824 776 L200 776 Q156 748 164 658 Z" fill="url(#carBody)" stroke="#191419" stroke-width="5.5" stroke-linejoin="round"/>`,
-    // Sculpted hood panel + glossy Vice City specular sheen highlights
-    `<path d="M242 558 Q512 542 782 558 L734 646 Q512 658 290 646 Z" fill="url(#carHood)" stroke="#191419" stroke-width="4" stroke-linejoin="round"/>`,
-    `<polygon points="300,564 358,560 326,638 286,636" fill="#FFFFFF" opacity="0.18"/>`,
-    `<polygon points="666,560 724,564 738,636 698,638" fill="#FFFFFF" opacity="0.14"/>`,
-    `<path d="M254 562 Q512 547 770 562" fill="none" stroke="#FDE8F5" stroke-width="3.5" opacity="0.7" stroke-linecap="round"/>`,
-    `<line x1="392" y1="560" x2="366" y2="634" stroke="#FBCFE8" stroke-width="3.5" opacity="0.7" stroke-linecap="round"/>`,
-    `<line x1="632" y1="560" x2="658" y2="634" stroke="#FBCFE8" stroke-width="3.5" opacity="0.7" stroke-linecap="round"/>`,
-    // Twin Headlights
-    `<rect x="194" y="628" width="96" height="44" rx="14" fill="#0F172A" stroke="#191419" stroke-width="4.5"/>`,
-    `<rect x="204" y="637" width="76" height="26" rx="8" fill="#E0F2FE" stroke="#38BDF8" stroke-width="3"/>`,
-    `<rect x="734" y="628" width="96" height="44" rx="14" fill="#0F172A" stroke="#191419" stroke-width="4.5"/>`,
-    `<rect x="744" y="637" width="76" height="26" rx="8" fill="#E0F2FE" stroke="#38BDF8" stroke-width="3"/>`,
-    // Front Air Grille
-    `<rect x="334" y="662" width="356" height="72" rx="16" fill="#180D29" stroke="#191419" stroke-width="4.5"/>`,
-    `<line x1="354" y1="684" x2="670" y2="684" stroke="#94A3B8" stroke-width="4" stroke-linecap="round"/>`,
-    `<line x1="354" y1="708" x2="670" y2="708" stroke="#94A3B8" stroke-width="4" stroke-linecap="round"/>`,
-    // Chrome bumper lip
-    `<rect x="218" y="756" width="588" height="16" rx="8" fill="#E2E8F0" stroke="#191419" stroke-width="4"/>`,
-
-    // Front Vanity License Plate: GTA 6 (vertically centered in cream area)
-    `<rect x="430" y="700" width="164" height="68" rx="10" fill="#FEF9C3" stroke="#191419" stroke-width="4.5"/>`,
-    `<rect x="434" y="704" width="156" height="12" rx="4" fill="#10B981"/>`,
-    `<text x="512" y="751" text-anchor="middle" font-family="'Arial Black', Impact, 'Segoe UI', sans-serif" font-weight="900" font-size="34" letter-spacing="2" fill="#140B24">GTA 6</text>`,
-
-    // Layer 5: Top GTA "MISSION PASSED!" HUD Zone
-    `<text x="516" y="100" text-anchor="middle" font-family="Impact, 'Arial Black', 'Segoe UI', sans-serif" font-weight="900" font-size="84" letter-spacing="2" fill="#090312">MISSION PASSED!</text>`,
-    `<text x="512" y="94" text-anchor="middle" font-family="Impact, 'Arial Black', 'Segoe UI', sans-serif" font-weight="900" font-size="84" letter-spacing="2" fill="url(#goldHud)" stroke="#140B24" stroke-width="11" paint-order="stroke fill" stroke-linejoin="round">MISSION PASSED!</text>`,
-
-    `<text x="512" y="146" text-anchor="middle" font-family="'Segoe UI', 'Arial Black', Arial, sans-serif" font-weight="900" font-size="31" letter-spacing="1.2" fill="#FFFFFF" stroke="#140B24" stroke-width="7" paint-order="stroke fill" stroke-linejoin="round"><tspan fill="#FFE066">RESPECT +</tspan>&#160;&#160;•&#160;&#160;CALLED IN SICK FOR GTA 6</text>`,
-
-    // Reward Pill (920px wide centered, crisp #FF33A8 wordmark dot)
-    `<rect x="52" y="168" width="920" height="68" rx="34" fill="#120A21" fill-opacity="0.94" stroke="#FF33A8" stroke-width="3.5"/>`,
-    `<text x="688" y="212" text-anchor="end" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="27" letter-spacing="0.4" fill="#34D399">+$79.99 REAL MONEY<tspan fill="#FFFFFF">&#160;&#160;•&#160;&#160;AI AGENT ON</tspan></text>`,
-    buildWordmarkGroup("translate(702, 163) scale(2.0)"),
-
-    // Layer 6: Bottom GTA Mission Summary Bar (3 columns, every label >= 23px)
-    `<rect x="32" y="818" width="960" height="172" rx="24" fill="#120A21" fill-opacity="0.95" stroke="url(#hudBorder)" stroke-width="3.5"/>`,
-    `<line x1="352" y1="840" x2="352" y2="968" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="2"/>`,
-    `<line x1="672" y1="840" x2="672" y2="968" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="2"/>`,
-
-    // Column 1 (2025 strikethrough -> 2026)
-    `<text x="192" y="886" text-anchor="middle" font-family="'Segoe UI', 'Arial Black', Arial, sans-serif" font-weight="900" font-size="36" fill="#FACC15">13-YR WAIT</text>`,
-    `<text x="128" y="944" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="28" fill="#FDA4AF">2025</text>`,
-    `<line x1="94" y1="946" x2="162" y2="922" stroke="#FB7185" stroke-width="4.5" stroke-linecap="round"/>`,
-    `<text x="234" y="944" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="28" fill="#FFFFFF"><tspan fill="#FACC15">→ </tspan>2026</text>`,
-
-    // Column 2
-    `<text x="512" y="886" text-anchor="middle" font-family="'Segoe UI', 'Arial Black', Arial, sans-serif" font-weight="900" font-size="33" fill="#38BDF8">214 GB CLEARED</text>`,
-    `<text x="512" y="944" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="23" fill="#FFFFFF">R.I.P. WORK FILES</text>`,
-
-    // Column 3
-    `<text x="832" y="886" text-anchor="middle" font-family="'Segoe UI', 'Arial Black', Arial, sans-serif" font-weight="900" font-size="33" fill="#FF66C4">JASON &amp; LUCIA</text>`,
-    `<text x="832" y="944" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="23" fill="#FFFFFF">GATOR CALLED SHOTGUN</text>`,
+    // 7. Bottom 18% Dark Settlement Payoff Bar (y: 826..976, optically centered)
+    `<rect x="56" y="826" width="912" height="150" rx="16" fill="#1C1226" stroke="#C41C83" stroke-width="2.5"/>`,
+    `<text x="84" y="889" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="30" fill="#FFFFFF">My AI agent paid with real money</text>`,
+    `<text x="84" y="939" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="30" fill="#FFFFFF">it won in</text>`,
+    buildWordmarkGroup("translate(222, 889) scale(2.04)"),
+    `<text x="436" y="939" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="30" fill="#FFFFFF">bounties.</text>`,
+    `<line x1="698" y1="850" x2="698" y2="952" stroke="#FFFFFF" stroke-opacity="0.22" stroke-width="1.5"/>`,
+    `<text x="833" y="879" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="19" letter-spacing="1.6" fill="#F0ABFC">SETTLEMENT + GAME</text>`,
+    `<text x="833" y="945" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="58" fill="#FFFFFF">$79.99</text>`,
 
     `</svg>`,
   ].join("\n");
